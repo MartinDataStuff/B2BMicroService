@@ -22,9 +22,9 @@ namespace CustomerApi.Controllers
         }
         // GET: api/customers
         [HttpGet]
-        public string Get()
+        public IEnumerable<Customer> Get()
         {
-            return "It works, customer controller.";
+            return repository.GetAll();
         }
 
         // GET api/customers/5
