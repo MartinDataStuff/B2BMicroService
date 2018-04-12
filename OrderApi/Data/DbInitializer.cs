@@ -19,13 +19,25 @@ namespace OrderApi.Data
                 return;   // DB has been seeded
             }
 
+
+
             List<Order> orders = new List<Order>
             {
-                new Order { Date = DateTime.Today, ProductId = 1, Quantity = 2 }
+                new Order { Date = DateTime.Today, Items = CreateMockData()}
             };
 
             context.Orders.AddRange(orders);
             context.SaveChanges();
+        }
+
+        static Dictionary<int, int> CreateMockData() {
+            var products = new Dictionary<int, int>();
+            int amountOfProducts = 5;
+            for (int i = 0; i < amountOfProducts; i++)
+            {
+                products.Add(i, 10);
+            }
+            return products;
         }
     }
 }

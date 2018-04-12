@@ -41,6 +41,11 @@ namespace OrderApi.Data
             return db.Orders.ToList();
         }
 
+        public IEnumerable<Order> GetListByIDs(List<int> entities)
+        {
+            return db.Orders.Where(x => entities.Contains(x.Id));
+        }
+
         void IRepository<Order>.Remove(int id)
         {
             var order = db.Orders.FirstOrDefault(p => p.Id == id);

@@ -52,28 +52,42 @@ namespace OrderApi.Controllers
             // You may need to change the port number in the BaseUrl below
             // before you can run the request.
             c.BaseUrl = new Uri("http://productapi/api/products/");
-            var request = new RestRequest(order.ProductId.ToString(), Method.GET);
-            var response = c.Execute<Product>(request);
-            var orderedProduct = response.Data;
+            var request = new RestRequest(Method.GET);
+            var response = c.Execute<List<Product>>(request);
 
-            if (order.Quantity <= orderedProduct.ItemsInStock)
+            foreach (var orderedProduct in response.Data)
             {
-                // reduce the number of items in stock for the ordered product,
-                // and create a new order.
-                orderedProduct.ItemsInStock -= order.Quantity;
-                var updateRequest = new RestRequest(orderedProduct.Id.ToString(), Method.PUT);
-                updateRequest.AddJsonBody(orderedProduct);
-                var updateResponse = c.Execute(updateRequest);
-
-                if (updateResponse.IsSuccessful)
+                //If item is not in order list, skip to next item.
+                if (!order.Items.ContainsKey(orderedProduct.Id))
                 {
-                    var newOrder = repository.Add(order);
-                    return CreatedAtRoute("GetOrder", new { id = newOrder.Id }, newOrder);
+                    continue;
+                }
+
+                int quantity = -1;
+                if (order.Items.TryGetValue(orderedProduct.Id, out quantity))
+                {
+                    if (quantity <= orderedProduct.ItemsInStock)
+                    {
+                        // reduce the number of items in stock for the ordered product,
+                        // and create a new order.
+                        orderedProduct.ItemsInStock -= quantity;
+                        var updateRequest = new RestRequest(orderedProduct.Id.ToString(), Method.PUT);
+                        updateRequest.AddJsonBody(orderedProduct);
+                        var updateResponse = c.Execute(updateRequest);
+
+                        if (!updateResponse.IsSuccessful)
+                        {
+                            // If the order could not be created, "return no content".
+                            return NoContent();
+                        }
+                    }
                 }
             }
+            // If the order could  be created, route to get order.
+            var newOrder = repository.Add(order);
+            return CreatedAtRoute("GetOrder", new { id = newOrder.Id }, newOrder);
 
-            // If the order could not be created, "return no content".
-            return NoContent();
+
         }
 
     }
