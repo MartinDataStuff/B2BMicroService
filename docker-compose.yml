@@ -1,6 +1,13 @@
 version: '3'
 
 services:
+
+  customerapi:
+    image: customerapi
+    build:
+      context: .
+      dockerfile: CustomerApi/Dockerfile
+
   productapi:
     image: productapi
     build:
@@ -14,9 +21,4 @@ services:
       dockerfile: OrderApi/Dockerfile
 
 
-  customerapi:
-    image: customerapi
-    build:
-      context: .
-      dockerfile: CustomerApi/Dockerfile
 
