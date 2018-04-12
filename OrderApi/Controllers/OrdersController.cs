@@ -23,6 +23,7 @@ namespace OrderApi.Controllers
         [HttpGet]
         public IEnumerable<Order> Get()
         {
+            var orders = repository.GetAll();
             return repository.GetAll();
         }
 
@@ -55,16 +56,23 @@ namespace OrderApi.Controllers
             var request = new RestRequest(Method.GET);
             var response = c.Execute<List<Product>>(request);
 
+            List<int> ints = new List<int>();
+            foreach(var objectint in order.Items)
+            {
+                ints.Add(objectint.ItemId);
+            }
+
+
             foreach (var orderedProduct in response.Data)
             {
                 //If item is not in order list, skip to next item.
-                if (!order.Items.ContainsKey(orderedProduct.Id))
+                if (!ints.Contains(orderedProduct.Id))
                 {
                     continue;
                 }
 
-                int quantity = -1;
-                if (order.Items.TryGetValue(orderedProduct.Id, out quantity))
+                int quantity = order.Items.FirstOrDefault(x => x.ItemId == orderedProduct.Id).NumberOfItem;
+                
                 {
                     if (quantity <= orderedProduct.ItemsInStock)
                     {

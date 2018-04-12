@@ -33,12 +33,12 @@ namespace OrderApi.Data
 
         Order IRepository<Order>.Get(int id)
         {
-            return db.Orders.FirstOrDefault(o => o.Id == id);
+            return db.Orders.Include(order => order.Items).FirstOrDefault(o => o.Id == id);
         }
 
         IEnumerable<Order> IRepository<Order>.GetAll()
         {
-            return db.Orders.ToList();
+            return db.Orders.Include(order => order.Items).ToList();
         }
 
         public IEnumerable<Order> GetListByIDs(List<int> entities)

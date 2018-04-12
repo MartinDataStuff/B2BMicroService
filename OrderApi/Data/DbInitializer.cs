@@ -30,12 +30,12 @@ namespace OrderApi.Data
             context.SaveChanges();
         }
 
-        static Dictionary<int, int> CreateMockData() {
-            var products = new Dictionary<int, int>();
+        static List<ProductQuantity> CreateMockData() {
+            var products = new List<ProductQuantity>();
             int amountOfProducts = 5;
             for (int i = 0; i < amountOfProducts; i++)
             {
-                products.Add(i, 10);
+                products.Add(new ProductQuantity { ItemId = i, NumberOfItem = 10 });
             }
             return products;
         }

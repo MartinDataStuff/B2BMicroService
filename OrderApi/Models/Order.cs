@@ -11,7 +11,7 @@ namespace OrderApi.Models
         public OrderStaus Staus { get; set; }
         public decimal ShippedCharged { get; set; }
         public DateTime EstimatedDeliveryTime { get; set; }
-        public Dictionary<int, int> Items { get; set; } //key = item id, value = quantity, keys also act as list of items.
+        public List<ProductQuantity> Items { get; set; }
 
 
         public enum OrderStaus { Requested, Shipped, Completed, Cancelled, Paid }
