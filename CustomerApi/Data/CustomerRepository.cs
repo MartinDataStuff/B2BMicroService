@@ -1,4 +1,5 @@
 ﻿using CustomerApi.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,27 +17,32 @@ namespace CustomerApi.Data
         }
         public Customer Add(Customer entity)
         {
-            throw new NotImplementedException();
+            var newCustomer = db.Customers.Add(entity).Entity;
+            db.SaveChanges();
+            return newCustomer;
         }
 
         public void Edit(Customer entity)
         {
-            throw new NotImplementedException();
+            db.Entry(entity).State = EntityState.Modified;
+            db.SaveChanges();
         }
 
         public Customer Get(int id)
         {
-            throw new NotImplementedException();
+            return db.Customers.FirstOrDefault(cust => cust.Id == id);
         }
 
         public IEnumerable<Customer> GetAll()
         {
-            throw new NotImplementedException();
+            return db.Customers.ToList();
         }
 
         public void Remove(int id)
         {
-            throw new NotImplementedException();
+            var customer = db.Customers.FirstOrDefault(cust => cust.Id == id);
+            db.Customers.Remove(customer);
+            db.SaveChanges();
         }
     }
 }
