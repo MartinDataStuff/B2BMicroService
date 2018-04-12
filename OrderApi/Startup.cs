@@ -21,7 +21,7 @@ namespace OrderApi
         public void ConfigureServices(IServiceCollection services)
         {
             // Register OrderApiContext for dependency injection and use In-memory database.
-            services.AddDbContext<OrderApiContext>(opt => opt.UseInMemoryDatabase("ProductDb"));
+            services.AddDbContext<OrderApiContext>(opt => opt.UseInMemoryDatabase("OrderDb"));
 
             // Register OrderRepository for dependency injection.
             services.AddScoped<IRepository<Order>, OrderRepository>();
