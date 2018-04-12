@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  productapi:
+    image: productapi
+    build:
+      context: .
+      dockerfile: ProductApi/Dockerfile
+
+  orderapi:
+    image: orderapi
+    build:
+      context: .
+      dockerfile: OrderApi/Dockerfile
+
+
+  customerapi:
+    image: customerapi
+    build:
+      context: .
+      dockerfile: CustomerApi/Dockerfile
+

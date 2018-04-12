@@ -11,7 +11,7 @@ namespace CustomerApi.Models
         public string CompanyName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public Address BillingAddress { get; set; }
-        public Address ShippingAddress { get; set; }
+        public string BillingAddress { get; set; }
+        public string ShippingAddress { get; set; }
     }
 }
