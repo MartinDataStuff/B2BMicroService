@@ -91,5 +91,11 @@ namespace CustomerApi.Controllers
             repository.Remove(id);
             return new NoContentResult();
         }
+
+        [HttpGet]
+        public bool HasGoodCreditStanding(int id)
+        {
+            return repository.ValidateCreditStanding(id);
+        }
     }
 }

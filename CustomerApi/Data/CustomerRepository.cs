@@ -30,12 +30,12 @@ namespace CustomerApi.Data
 
         public Customer Get(int id)
         {
-            return db.Customers.FirstOrDefault(cust => cust.Id == id);
+            return db.Customers.Include(customer => customer.OrderList).FirstOrDefault(cust => cust.Id == id);
         }
 
         public IEnumerable<Customer> GetAll()
         {
-            return db.Customers.ToList();
+            return db.Customers.Include(customer => customer.OrderList).ToList();
         }
 
         public void Remove(int id)
@@ -43,6 +43,12 @@ namespace CustomerApi.Data
             var customer = db.Customers.FirstOrDefault(cust => cust.Id == id);
             db.Customers.Remove(customer);
             db.SaveChanges();
+        }
+
+        public bool ValidateCreditStanding(int id)
+        {
+            var orderList = db.Customers.FirstOrDefault(cust => cust.Id == id).OrderList;
+            return orderList.FirstOrDefault(order => order.Staus == Order.OrderStaus.Requested) != null;
         }
     }
 }
