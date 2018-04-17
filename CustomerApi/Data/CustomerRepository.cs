@@ -48,7 +48,9 @@ namespace CustomerApi.Data
         public bool ValidateCreditStanding(int id)
         {
             var orderList = db.Customers.FirstOrDefault(cust => cust.Id == id).OrderIdList;
-            return orderList.FirstOrDefault(orderId => orderId.Staus == Order.OrderStaus.Requested) != null;
+            orderList.Distinct();
+            return false;
+            //return orderList.FirstOrDefault(orderId => orderId == Order.OrderStaus.Requested) != null;
         }
     }
 }
