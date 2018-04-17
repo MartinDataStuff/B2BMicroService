@@ -128,5 +128,12 @@ namespace OrderApi.Controllers
 
             return Json(dt);
         }
+
+        [HttpGet]
+        [ActionName("AllFromCustomer/{CustomerReqNo}")]
+        public IEnumerable<Order> GetAllFromCustomer(int CustomerReqNo)
+        {
+            return repository.GetAll().Where(order => order.CustomerId == CustomerReqNo);
+        }
     }
 }

@@ -110,7 +110,7 @@ namespace CustomerApi.Controllers
             var customer = repository.Get(id);
             RestClient c = new RestClient();
 
-            c.BaseUrl = new Uri("http://orderapi/api/order/OrdersFromCustomerID");
+            c.BaseUrl = new Uri("http://orderapi/api/order/AllFromCustomer");
 
             var request = new RestRequest(id.ToString(), Method.GET);
             //Gets a list of all orders with this customer as owner
