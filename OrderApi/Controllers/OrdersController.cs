@@ -38,7 +38,13 @@ namespace OrderApi.Controllers
             }
             return new ObjectResult(item);
         }
-
+        // Update api/orders/order
+        [HttpPut("{order}")]
+        public IActionResult Update(Order order)
+        {
+            repository.Edit(order);
+            return new NoContentResult();
+        }
         // POST api/orders
         [HttpPost]
         public IActionResult Post([FromBody]Order order)
@@ -94,9 +100,6 @@ namespace OrderApi.Controllers
             // If the order could  be created, route to get order.
             var newOrder = repository.Add(order);
             return CreatedAtRoute("GetOrder", new { id = newOrder.Id }, newOrder);
-
-
         }
-
     }
 }

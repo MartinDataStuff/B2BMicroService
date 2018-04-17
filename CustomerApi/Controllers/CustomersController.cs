@@ -53,7 +53,13 @@ namespace CustomerApi.Controllers
 
             return CreatedAtRoute("GetCustomer", new { id = newCustomer.Id }, newCustomer);
         }
-
+        // Update api/customers/customer
+        [HttpPut("{customer}")]
+        public IActionResult Update(Customer customer)
+        {
+            repository.Edit(customer);
+            return new NoContentResult();
+        }
         // PUT api/customers/5
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody]Customer customer)
