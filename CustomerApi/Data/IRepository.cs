@@ -9,6 +9,5 @@ namespace CustomerApi.Data
         T Add(T entity);
         void Edit(T entity);
         void Remove(int id);
-        bool ValidateCreditStanding(int id);
     }
 }
