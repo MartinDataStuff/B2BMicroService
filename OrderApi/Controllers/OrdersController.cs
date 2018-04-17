@@ -27,7 +27,7 @@ namespace OrderApi.Controllers
             return repository.GetAll();
         }
 
-        // GET api/products/5
+        // GET api/order/5
         [HttpGet("{id}", Name = "GetOrder")]
         public IActionResult Get(int id)
         {
@@ -36,6 +36,19 @@ namespace OrderApi.Controllers
             {
                 return NotFound();
             }
+            return new ObjectResult(item);
+        }
+        // GET api/order/5
+        [HttpGet("{id}", Name = "Cancel")]
+        public IActionResult Cancel(int orderNo)
+        {
+            var item = repository.Get(orderNo);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            item.Staus = Order.OrderStaus.Cancelled;
+            repository.Edit(item);
             return new ObjectResult(item);
         }
         // Update api/orders/order
@@ -53,7 +66,6 @@ namespace OrderApi.Controllers
             {
                 return BadRequest();
             }
-
             // Call ProductApi to get the product ordered
             RestClient c = new RestClient();
             // You may need to change the port number in the BaseUrl below
