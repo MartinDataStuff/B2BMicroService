@@ -19,9 +19,9 @@ namespace API_Gateway.Controllers
 
         // POST: api/APIGateway
         [HttpPost]
-        public IActionResult Post([FromBody])
+        public IActionResult Post([FromBody] string placeholder)
         {
-          
+            return NoContent();
         }
         
         // PUT: api/APIGateway/5
