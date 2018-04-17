@@ -93,7 +93,8 @@ namespace CustomerApi.Controllers
             return new NoContentResult();
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]//, Name = "GetCustomerCreditStanding")]
+       // [Route("Customer/CreditStanding")]
         public IActionResult GetCreditStanding(int id)
         {
             if (repository.Get(id) == null)
@@ -102,17 +103,17 @@ namespace CustomerApi.Controllers
             }
             var customer = repository.Get(id);
             RestClient c = new RestClient();
-            // You may need to change the port number in the BaseUrl below
-            // before you can run the request.
+
             c.BaseUrl = new Uri("http://orderapi/api/order/");
+
             var request = new RestRequest(Method.GET);
+            //Gets a list of all orders
             var response = c.Execute<List<Order>>(request);
-
+            //Gets a list of all orders with this customer as owner
             var listOfAllOrdersFromCustomer = response.Data.Where(order => order.CustomerId == id);
-
-
-            return NotFound();
-            //return repository.ValidateCreditStanding(id);
+            //Looks through the list to see if customer has any orders that hasn't been paid
+            var hasNotPaid = listOfAllOrdersFromCustomer.FirstOrDefault(order => order.Staus == Order.OrderStaus.Requested) != null;
+            return Json(hasNotPaid);
         }
     }
 }
