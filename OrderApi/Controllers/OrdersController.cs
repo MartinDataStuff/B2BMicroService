@@ -116,5 +116,22 @@ namespace OrderApi.Controllers
 
             return Json(dt);
         }
+
+        [HttpGet]
+        [ActionName("GetShippingCharge/{id}")]
+        public IActionResult CalculateShippingCharge(int id)
+        {
+            Order order = repository.Get(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            decimal shippingCost = 30;
+            shippingCost = shippingCost * 3;
+            order.ShippingCharge = shippingCost;
+            repository.Edit(order);
+            return Json(shippingCost);
+        }
     }
 }
