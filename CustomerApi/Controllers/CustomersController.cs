@@ -108,8 +108,8 @@ namespace CustomerApi.Controllers
                 return NotFound();
             }
             var customer = repository.Get(id);
-            RestClient c = new RestClient();
 
+            RestClient c = new RestClient();
             c.BaseUrl = new Uri("http://orderapi/api/order/AllFromCustomer");
 
             var request = new RestRequest(id.ToString(), Method.GET);
@@ -118,6 +118,27 @@ namespace CustomerApi.Controllers
             //Looks through the list to see if customer has any orders that hasn't been paid
             var hasNotPaid = response.Data.FirstOrDefault(order => order.Staus == Order.OrderStaus.Requested) != null;
             return Json(hasNotPaid);
+        }
+
+        [HttpPost]
+        [ActionName("PlaceOrder")]
+        public IActionResult PlaceOrder([FromBody]DTOCustomerOrder customerOrder)
+        {
+            var customer = repository.Get(customerOrder.Customer.Id);
+            IActionResult answer = Content("No new customer were needed");
+            if (customer == null)
+            {
+                customer = repository.Add(customerOrder.Customer);
+                answer = CreatedAtRoute("GetCustomer", new { id = customer.Id }, customer);
+            }
+            customerOrder.Order.CustomerId = customer.Id;
+
+            RestClient c = new RestClient();
+            c.BaseUrl = new Uri("http://orderapi/api/order/");
+            var request = new RestRequest(Method.POST);
+            request.AddBody(customerOrder.Order);
+            var response = c.Execute<Order>(request);
+            return answer;
         }
     }
 }
