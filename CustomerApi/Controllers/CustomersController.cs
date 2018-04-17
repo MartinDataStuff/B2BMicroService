@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CustomerApi.Data;
 using CustomerApi.Models;
+using RestSharp;
 
 namespace CustomerApi.Controllers
 {
@@ -93,9 +94,25 @@ namespace CustomerApi.Controllers
         }
 
         [HttpGet]
-        public bool HasGoodCreditStanding(int id)
+        public IActionResult GetCreditStanding(int id)
         {
-            return repository.ValidateCreditStanding(id);
+            if (repository.Get(id) == null)
+            {
+                return NotFound();
+            }
+            var customer = repository.Get(id);
+            RestClient c = new RestClient();
+            // You may need to change the port number in the BaseUrl below
+            // before you can run the request.
+            c.BaseUrl = new Uri("http://orderapi/api/order/");
+            var request = new RestRequest(Method.GET);
+            var response = c.Execute<List<Order>>(request);
+
+            var listOfAllOrdersFromCustomer = response.Data.Where(order => order.CustomerId == id);
+
+
+            return NotFound();
+            //return repository.ValidateCreditStanding(id);
         }
     }
 }
