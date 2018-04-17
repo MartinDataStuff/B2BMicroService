@@ -44,7 +44,7 @@ namespace API_Gateway.Controllers
         [HttpPut("{product}")]
         public IActionResult Update(ValuesController valuesController)
         {
-            repository.Edit(valuesController);
+           // repository.Edit(valuesController);
             return new NoContentResult();
         }
     }
