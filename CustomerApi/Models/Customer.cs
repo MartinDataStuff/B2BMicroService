@@ -13,6 +13,5 @@ namespace CustomerApi.Models
         public string Phone { get; set; }
         public string BillingAddress { get; set; }
         public string ShippingAddress { get; set; }
-        public List<int> OrderIdList { get; set; } = new List<int>();
     }
 }
