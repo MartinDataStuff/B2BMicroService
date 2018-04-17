@@ -20,7 +20,7 @@ namespace ProductApi.Controllers
 
         // GET: api/products
         [HttpGet]
-        public IEnumerable<Product> Get()
+        public IEnumerable<Product> GetAll()
         {
             return repository.GetAll();
         }
@@ -86,6 +86,24 @@ namespace ProductApi.Controllers
 
             repository.Remove(id);
             return new NoContentResult();
+        }
+        // Update api/products/product
+        [HttpPut("{product}")]
+        public IActionResult Update(Product product)
+        {
+            repository.Edit(product);
+            return new NoContentResult();
+        }
+        // GetValidCategories: api/string
+        [HttpGet]
+        public IEnumerable<string> GetValidCategories()
+        {
+            List<string> returnVlaue = new List<string>();
+            foreach (var item in repository.GetAll())
+            {
+                returnVlaue.Add(item.Description);
+            }
+            return returnVlaue.Distinct();
         }
     }
 }

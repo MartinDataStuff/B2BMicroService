@@ -40,5 +40,12 @@ namespace API_Gateway.Controllers
         public void Delete(int id)
         {
         }
+        // Update api/values/product
+        [HttpPut("{product}")]
+        public IActionResult Update(ValuesController valuesController)
+        {
+            repository.Edit(valuesController);
+            return new NoContentResult();
+        }
     }
 }
