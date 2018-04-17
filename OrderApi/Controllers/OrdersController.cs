@@ -9,7 +9,7 @@ using RestSharp;
 
 namespace OrderApi.Controllers
 {
-    [Route("api/Orders")]
+    [Route("api/Orders/[action]")]
     public class OrdersController : Controller
     {
         private readonly IRepository<Order> repository;
@@ -75,7 +75,7 @@ namespace OrderApi.Controllers
             var response = c.Execute<List<Product>>(request);
 
             List<int> ints = new List<int>();
-            foreach(var objectint in order.Items)
+            foreach (var objectint in order.Items)
             {
                 ints.Add(objectint.ItemId);
             }
@@ -90,7 +90,7 @@ namespace OrderApi.Controllers
                 }
 
                 int quantity = order.Items.FirstOrDefault(x => x.ItemId == orderedProduct.Id).NumberOfItem;
-                
+
                 {
                     if (quantity <= orderedProduct.ItemsInStock)
                     {
@@ -112,6 +112,38 @@ namespace OrderApi.Controllers
             // If the order could  be created, route to get order.
             var newOrder = repository.Add(order);
             return CreatedAtRoute("GetOrder", new { id = newOrder.Id }, newOrder);
+        }
+
+        [HttpGet]
+        [ActionName("GetDeliveryDate/{id}")]
+        public IActionResult CalculateEstimatedDeliveryDate(int id)
+        {
+            Order order = repository.Get(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+            DateTime dt = DateTime.Now;
+            dt = dt.AddDays(3);
+
+            return Json(dt);
+        }
+
+        [HttpGet]
+        [ActionName("GetShippingCharge/{id}")]
+        public IActionResult CalculateShippingCharge(int id)
+        {
+            Order order = repository.Get(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            decimal shippingCost = 30;
+            shippingCost = shippingCost * 3;
+            order.ShippingCharge = shippingCost;
+            repository.Edit(order);
+            return Json(shippingCost);
         }
     }
 }

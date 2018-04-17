@@ -95,7 +95,7 @@ namespace ProductApi.Controllers
             return new NoContentResult();
         }
         // GetValidCategories: api/string
-        [HttpGet(Name = "GetValidCategories")]
+        [HttpGet("[controller]/[action]")]
         public IEnumerable<string> GetValidCategories()
         {
             List<string> returnVlaue = new List<string>();
