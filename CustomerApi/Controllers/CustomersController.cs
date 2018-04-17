@@ -93,7 +93,7 @@ namespace CustomerApi.Controllers
             return new NoContentResult();
         }
 
-        [HttpGet("{id}")]//, Name = "GetCustomerCreditStanding")]
+        [HttpGet("{id}", Name = "CustomerCreditStanding")]
        // [Route("Customer/CreditStanding")]
         public IActionResult GetCreditStanding(int id)
         {
