@@ -12,7 +12,7 @@ namespace OrderApi.Models
         /// </summary>
         public DateTime? Date { get; set; }
         public OrderStaus Staus { get; set; }
-        public decimal ShippedCharged { get; set; }
+        public decimal ShippingCharge { get; set; }
         public DateTime EstimatedDeliveryTime { get; set; }
         public List<ProductQuantity> Items { get; set; }
 
