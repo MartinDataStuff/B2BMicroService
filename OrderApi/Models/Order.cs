@@ -7,6 +7,9 @@ namespace OrderApi.Models
     {
         public int Id { get; set; }
         public int CustomerId { get; set; }
+        /// <summary>
+        /// Date order is made
+        /// </summary>
         public DateTime? Date { get; set; }
         public OrderStaus Staus { get; set; }
         public decimal ShippedCharged { get; set; }
