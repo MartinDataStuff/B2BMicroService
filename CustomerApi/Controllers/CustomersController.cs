@@ -12,7 +12,7 @@ using RestSharp;
 namespace CustomerApi.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Customers")]
+    [Route("api/Customers/[action]")]
     public class CustomersController : Controller
     {
         private readonly IRepository<Customer> repository;
@@ -99,8 +99,8 @@ namespace CustomerApi.Controllers
             return new NoContentResult();
         }
 
-        [HttpGet("{id}", Name = "CustomerCreditStanding")]
-       // [Route("Customer/CreditStanding")]
+        [HttpGet]
+        [ActionName("GetDeliveryDate/{id}")]
         public IActionResult GetCreditStanding(int id)
         {
             if (repository.Get(id) == null)
