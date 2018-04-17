@@ -100,7 +100,7 @@ namespace CustomerApi.Controllers
         }
 
         [HttpGet]
-        [ActionName("GetDeliveryDate/{id}")]
+        [ActionName("CreditStanding/{id}")]
         public IActionResult GetCreditStanding(int id)
         {
             if (repository.Get(id) == null)
@@ -110,15 +110,13 @@ namespace CustomerApi.Controllers
             var customer = repository.Get(id);
             RestClient c = new RestClient();
 
-            c.BaseUrl = new Uri("http://orderapi/api/order/");
+            c.BaseUrl = new Uri("http://orderapi/api/order/OrdersFromCustomerID");
 
-            var request = new RestRequest(Method.GET);
-            //Gets a list of all orders
-            var response = c.Execute<List<Order>>(request);
+            var request = new RestRequest(id.ToString(), Method.GET);
             //Gets a list of all orders with this customer as owner
-            var listOfAllOrdersFromCustomer = response.Data.Where(order => order.CustomerId == id);
+            var response = c.Execute<List<Order>>(request);
             //Looks through the list to see if customer has any orders that hasn't been paid
-            var hasNotPaid = listOfAllOrdersFromCustomer.FirstOrDefault(order => order.Staus == Order.OrderStaus.Requested) != null;
+            var hasNotPaid = response.Data.FirstOrDefault(order => order.Staus == Order.OrderStaus.Requested) != null;
             return Json(hasNotPaid);
         }
     }
