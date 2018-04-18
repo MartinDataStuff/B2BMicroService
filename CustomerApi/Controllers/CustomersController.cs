@@ -30,6 +30,7 @@ namespace CustomerApi.Controllers
 
         // GET api/customers/5
         [HttpGet("[action]/{id}")]
+        [HttpGet("[action]/{id}", Name = "GetCustomer")]
         public IActionResult Get(int id)
         {
             var item = repository.Get(id);
@@ -113,7 +114,7 @@ namespace CustomerApi.Controllers
             var hasNotPaid = response.Data.FirstOrDefault(order => order.Staus == Order.OrderStaus.Requested) != null;
             return Json(hasNotPaid);
         }
-        
+
         [HttpPost("[action]")]
         public IActionResult PlaceOrder([FromBody]DTOCustomerOrder customerOrder)
         {
