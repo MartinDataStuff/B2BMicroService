@@ -29,7 +29,6 @@ namespace CustomerApi.Controllers
         }
 
         // GET api/customers/5
-        [HttpGet("[action]/{id}")]
         [HttpGet("[action]/{id}", Name = "GetCustomer")]
         public IActionResult Get(int id)
         {
