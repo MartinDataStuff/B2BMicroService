@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ProductApi.Data;
 using ProductApi.Models;
 
 namespace ProductApi.Controllers
 {
-    [Route("api/Products")]
+    [Route("api/[controller]")]
     public class ProductsController : Controller
     {
         private readonly IRepository<Product> repository;
@@ -19,14 +17,15 @@ namespace ProductApi.Controllers
         }
 
         // GET: api/products
+        [HttpGet("[action]")]
         [HttpGet]
-        public IEnumerable<Product> GetAll()
+        public IEnumerable<Product> Get()
         {
             return repository.GetAll();
         }
 
         // GET api/products/5
-        [HttpGet("{id}", Name="GetProduct")]
+        [HttpGet("{id}", Name = "GetProduct")]
         public IActionResult Get(int id)
         {
             var item = repository.Get(id);
@@ -95,13 +94,13 @@ namespace ProductApi.Controllers
             return new NoContentResult();
         }
         // GetValidCategories: api/string
-        [HttpGet("[controller]/[action]")]
+        [HttpGet("[action]")]
         public IEnumerable<string> GetValidCategories()
         {
             List<string> returnVlaue = new List<string>();
             foreach (var item in repository.GetAll())
             {
-                returnVlaue.Add(item.Description);
+                returnVlaue.Add(item.Category);
             }
             return returnVlaue.Distinct();
         }

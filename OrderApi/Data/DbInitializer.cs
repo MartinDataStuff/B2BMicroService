@@ -19,18 +19,17 @@ namespace OrderApi.Data
                 return;   // DB has been seeded
             }
 
-
-
             List<Order> orders = new List<Order>
             {
-                new Order { Date = DateTime.Today, Items = CreateMockData()}
+                new Order { Date = DateTime.Today, Items = CreateMockData(),CustomerId = 1 }
             };
 
             context.Orders.AddRange(orders);
             context.SaveChanges();
         }
 
-        static List<ProductQuantity> CreateMockData() {
+        static List<ProductQuantity> CreateMockData()
+        {
             var products = new List<ProductQuantity>();
             int amountOfProducts = 5;
             for (int i = 0; i < amountOfProducts; i++)
@@ -40,4 +39,5 @@ namespace OrderApi.Data
             return products;
         }
     }
+
 }

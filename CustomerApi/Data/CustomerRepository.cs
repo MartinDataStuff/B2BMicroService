@@ -35,6 +35,8 @@ namespace CustomerApi.Data
 
         public IEnumerable<Customer> GetAll()
         {
+
+            var list = db.Customers.ToList();
             return db.Customers.ToList();
         }
 

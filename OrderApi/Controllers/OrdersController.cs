@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using OrderApi.Data;
 using OrderApi.Models;
@@ -9,7 +8,7 @@ using RestSharp;
 
 namespace OrderApi.Controllers
 {
-    [Route("api/Orders/[action]")]
+    [Route("api/[controller]")]
     public class OrdersController : Controller
     {
         private readonly IRepository<Order> repository;
@@ -21,14 +20,14 @@ namespace OrderApi.Controllers
 
         // GET: api/orders
         [HttpGet]
+        [HttpGet("[action]")]
         public IEnumerable<Order> Get()
         {
-            var orders = repository.GetAll();
             return repository.GetAll();
         }
 
-        // GET api/order/5
-        [HttpGet("{id}", Name = "GetOrder")]
+        // GET api/orders/5
+        [HttpGet("[action]/{id}", Name = "GetOrder")]
         public IActionResult Get(int id)
         {
             var item = repository.Get(id);
@@ -38,19 +37,7 @@ namespace OrderApi.Controllers
             }
             return new ObjectResult(item);
         }
-        // GET api/order/5
-        [HttpGet("{id}", Name = "Cancel")]
-        public IActionResult Cancel(int orderNo)
-        {
-            var item = repository.Get(orderNo);
-            if (item == null)
-            {
-                return NotFound();
-            }
-            item.Staus = Order.OrderStaus.Cancelled;
-            repository.Edit(item);
-            return new ObjectResult(item);
-        }
+
         // Update api/orders/order
         [HttpPut("{order}")]
         public IActionResult Update(Order order)
@@ -58,6 +45,7 @@ namespace OrderApi.Controllers
             repository.Edit(order);
             return new NoContentResult();
         }
+
         // POST api/orders
         [HttpPost]
         public IActionResult Post([FromBody]Order order)
@@ -74,48 +62,50 @@ namespace OrderApi.Controllers
             var request = new RestRequest(Method.GET);
             var response = c.Execute<List<Product>>(request);
 
-            List<int> ints = new List<int>();
+            List<int> listOfProductIds = new List<int>();
             foreach (var objectint in order.Items)
             {
-                ints.Add(objectint.ItemId);
+                listOfProductIds.Add(objectint.ItemId);
             }
-
 
             foreach (var orderedProduct in response.Data)
             {
                 //If item is not in order list, skip to next item.
-                if (!ints.Contains(orderedProduct.Id))
+                if (!listOfProductIds.Contains(orderedProduct.Id))
                 {
                     continue;
                 }
 
                 int quantity = order.Items.FirstOrDefault(x => x.ItemId == orderedProduct.Id).NumberOfItem;
 
+                if (quantity <= orderedProduct.ItemsInStock)
                 {
-                    if (quantity <= orderedProduct.ItemsInStock)
-                    {
-                        // reduce the number of items in stock for the ordered product,
-                        // and create a new order.
-                        orderedProduct.ItemsInStock -= quantity;
-                        var updateRequest = new RestRequest(orderedProduct.Id.ToString(), Method.PUT);
-                        updateRequest.AddJsonBody(orderedProduct);
-                        var updateResponse = c.Execute(updateRequest);
+                    // reduce the number of items in stock for the ordered product,
+                    // and create a new order.
+                    orderedProduct.ItemsInStock -= quantity;
+                    var updateRequest = new RestRequest(orderedProduct.Id.ToString(), Method.PUT);
+                    updateRequest.AddJsonBody(orderedProduct);
+                    var updateResponse = c.Execute(updateRequest);
 
-                        if (!updateResponse.IsSuccessful)
-                        {
-                            // If the order could not be created, "return no content".
-                            return NoContent();
-                        }
+                    if (!updateResponse.IsSuccessful)
+                    {
+                        // If the order could not be created, "return no content".
+                        return NoContent();
                     }
                 }
+                else
+                {
+                    return NoContent();
+                }
+
             }
             // If the order could  be created, route to get order.
             var newOrder = repository.Add(order);
             return CreatedAtRoute("GetOrder", new { id = newOrder.Id }, newOrder);
         }
 
-        [HttpGet]
-        [ActionName("GetDeliveryDate/{id}")]
+
+        [HttpGet("[action]/{id}")]
         public IActionResult CalculateEstimatedDeliveryDate(int id)
         {
             Order order = repository.Get(id);
@@ -129,11 +119,24 @@ namespace OrderApi.Controllers
             return Json(dt);
         }
 
-        [HttpGet]
-        [ActionName("AllFromCustomer/{CustomerReqNo}")]
+        [HttpGet("[action]/{CustomerReqNo}")]
         public IEnumerable<Order> GetAllFromCustomer(int CustomerReqNo)
         {
-            return repository.GetAll().Where(order => order.CustomerId == CustomerReqNo);
+            return repository.GetAll().Where(order => order.CustomerId == CustomerReqNo).ToList();
+        }
+
+        // GET api/order/5
+        [HttpGet("[action]/{orderNo}")]
+        public IActionResult Cancel(int orderNo)
+        {
+            var order = repository.Get(orderNo);
+            if (order == null)
+            {
+                return NotFound();
+            }
+            order.Staus = Order.OrderStaus.Cancelled;
+            repository.Edit(order);
+            return new ObjectResult(order);
         }
     }
 }

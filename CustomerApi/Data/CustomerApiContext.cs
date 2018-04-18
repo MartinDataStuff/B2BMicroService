@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace CustomerApi.Data
 {
-    public class CustomerApiContext: DbContext
+    public class CustomerApiContext : DbContext
     {
-        public CustomerApiContext(DbContextOptions<CustomerApiContext> options)
+        public CustomerApiContext(DbContextOptions<CustomerApiContext> options) 
             : base(options)
         {
         }

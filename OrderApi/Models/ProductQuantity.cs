@@ -10,5 +10,6 @@ namespace OrderApi.Models
         public int Id { get; set; }
         public int NumberOfItem { get; set; }
         public int ItemId { get; set; }
+
     }
 }

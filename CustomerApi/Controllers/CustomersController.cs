@@ -12,7 +12,7 @@ using RestSharp;
 namespace CustomerApi.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Customers/[action]")]
+    [Route("api/Customers/")]
     public class CustomersController : Controller
     {
         private readonly IRepository<Customer> repository;
@@ -29,7 +29,7 @@ namespace CustomerApi.Controllers
         }
 
         // GET api/customers/5
-        [HttpGet("{id}", Name = "GetCustomer")]
+        [HttpGet("[action]/{id}")]
         public IActionResult Get(int id)
         {
             var item = repository.Get(id);
@@ -53,13 +53,8 @@ namespace CustomerApi.Controllers
 
             return CreatedAtRoute("GetCustomer", new { id = newCustomer.Id }, newCustomer);
         }
-        // Update api/customers/customer
-        [HttpPut("{customer}")]
-        public IActionResult Update(Customer customer)
-        {
-            repository.Edit(customer);
-            return new NoContentResult();
-        }
+
+
         // PUT api/customers/5
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody]Customer customer)
@@ -99,8 +94,7 @@ namespace CustomerApi.Controllers
             return new NoContentResult();
         }
 
-        [HttpGet]
-        [ActionName("CreditStanding/{id}")]
+        [HttpGet("[action]/{id}")]
         public IActionResult GetCreditStanding(int id)
         {
             if (repository.Get(id) == null)
@@ -110,7 +104,7 @@ namespace CustomerApi.Controllers
             var customer = repository.Get(id);
 
             RestClient c = new RestClient();
-            c.BaseUrl = new Uri("http://orderapi/api/order/AllFromCustomer");
+            c.BaseUrl = new Uri("http://orderapi/api/orders/GetAllFromCustomer/");
 
             var request = new RestRequest(id.ToString(), Method.GET);
             //Gets a list of all orders with this customer as owner
@@ -119,9 +113,8 @@ namespace CustomerApi.Controllers
             var hasNotPaid = response.Data.FirstOrDefault(order => order.Staus == Order.OrderStaus.Requested) != null;
             return Json(hasNotPaid);
         }
-
-        [HttpPost]
-        [ActionName("PlaceOrder")]
+        
+        [HttpPost("[action]")]
         public IActionResult PlaceOrder([FromBody]DTOCustomerOrder customerOrder)
         {
             var customer = repository.Get(customerOrder.Customer.Id);
