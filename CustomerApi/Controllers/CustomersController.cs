@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using CustomerApi.Data;
 using CustomerApi.Models;
 using RestSharp;
+using Newtonsoft.Json;
 
 namespace CustomerApi.Controllers
 {
@@ -127,9 +128,12 @@ namespace CustomerApi.Controllers
             customerOrder.Order.CustomerId = customer.Id;
 
             RestClient c = new RestClient();
-            c.BaseUrl = new Uri("http://orderapi/api/order/");
+            c.BaseUrl = new Uri("http://orderapi/api/orders/");
             var request = new RestRequest(Method.POST);
-            request.AddBody(customerOrder.Order);
+
+            var json = JsonConvert.SerializeObject(customerOrder.Order);
+            request.AddParameter("application/json; charset=utf-8", json, ParameterType.RequestBody);
+            request.RequestFormat = DataFormat.Json;
             var response = c.Execute<Order>(request);
             return answer;
         }

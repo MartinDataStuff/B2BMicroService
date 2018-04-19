@@ -3,19 +3,25 @@ version: '3'
 services:
   productapi:
     image: productapi
+    ports:
+      - 6001:80
     build:
       context: .
       dockerfile: ProductApi/Dockerfile
 
   orderapi:
-    image: orderapi
+    image: orderapi    
+    ports:
+      - 6002:80
     build:
       context: .
       dockerfile: OrderApi/Dockerfile
 
 
   customerapi:
-    image: customerapi
+    image: customerapi    
+    ports:
+      - 6000:80
     build:
       context: .
       dockerfile: CustomerApi/Dockerfile
